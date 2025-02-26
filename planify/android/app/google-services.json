@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "541778958219",
+    "project_id": "iplteams-17959",
+    "storage_bucket": "iplteams-17959.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541778958219:android:28d964e1a8ab9f7c57c18e",
+        "android_client_info": {
+          "package_name": "com.example.firebase_with_inherited_widget"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtlA5qHvdUrLRZk5vZP_qssatev2kbqtM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541778958219:android:86343fad90b0023a57c18e",
+        "android_client_info": {
+          "package_name": "com.example.ipl_team_app_storage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtlA5qHvdUrLRZk5vZP_qssatev2kbqtM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541778958219:android:c7b05d9f601e7d1957c18e",
+        "android_client_info": {
+          "package_name": "com.example.planify"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtlA5qHvdUrLRZk5vZP_qssatev2kbqtM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541778958219:android:3222008a73fbeb1057c18e",
+        "android_client_info": {
+          "package_name": "com.example.quick_commerce_using_firebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtlA5qHvdUrLRZk5vZP_qssatev2kbqtM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,2 @@
+C:/Git with flutter/flutter_framework/flutter_projects/Projects/planify/android/app/.cxx/Debug/1r16373w/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Git with flutter/flutter_framework/flutter_projects/Projects/planify/android/app/.cxx/Debug/1r16373w/arm64-v8a/CMakeFiles/rebuild_cache.dir

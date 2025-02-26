@@ -1,0 +1,2 @@
+C:/GitHub Flutter/planify/android/app/.cxx/Debug/3s8634b4/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/GitHub Flutter/planify/android/app/.cxx/Debug/3s8634b4/arm64-v8a/CMakeFiles/rebuild_cache.dir
