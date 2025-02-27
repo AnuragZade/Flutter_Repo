@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:planify/view/Splash&Login&Signup/resetPasswordScreen.dart';
 import 'package:planify/view/Splash&Login&Signup/signUp_Screen.dart';
+import 'package:planify/view/navBar.dart';
 
 import '../../controller/logInController.dart';
 
@@ -70,8 +71,13 @@ class LogInScreen extends StatelessWidget {
                           style: GoogleFonts.b612(
                               fontSize: 20.sp, fontWeight: FontWeight.w500))),
                   SizedBox(height: 30.h),
-                  _buildSocialButton(
-                      "assets/images/GOOGLE.png", "Login with Google"),
+                  GestureDetector(
+                    onTap: () {
+                      Get.offAll(PersistanrnavCustom());
+                    },
+                    child: _buildSocialButton(
+                        "assets/images/GOOGLE.png", "Login with Google"),
+                  ),
                   _buildSocialButton(
                       "assets/images/FACEBOOK.png", "Login with Facebook"),
                   SizedBox(height: 10.h),
