@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import '../controller/nav_controller.dart';
 
@@ -8,7 +9,7 @@ class PersistanrnavCustom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final NavController controller = Get.put(NavController());
+    final NavController navBarController = Get.put(NavController());
 
     return GetBuilder<NavController>(
       builder: (controller) {
@@ -20,18 +21,47 @@ class PersistanrnavCustom extends StatelessWidget {
           screens: controller.screens,
           items: [
             PersistentBottomNavBarItem(
+              title: ("Home"),
+              textStyle: GoogleFonts.roboto(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
               icon: const Icon(Icons.home, size: 36),
               inactiveIcon: const Icon(Icons.home_outlined),
             ),
             PersistentBottomNavBarItem(
-              icon: const Icon(Icons.event, size: 36),
-              inactiveIcon: const Icon(Icons.event_outlined),
+              title: ("Categories"),
+              textStyle: GoogleFonts.roboto(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+              icon: const Icon(Icons.category, size: 36),
+              inactiveIcon: const Icon(Icons.category_outlined),
             ),
             PersistentBottomNavBarItem(
-              icon: const Icon(Icons.home, size: 36),
-              inactiveIcon: const Icon(Icons.map),
+              title: ("Events"),
+              textStyle: GoogleFonts.roboto(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+              icon: const Icon(Icons.bakery_dining, size: 36),
+              inactiveIcon: const Icon(Icons.bakery_dining_outlined),
             ),
             PersistentBottomNavBarItem(
+              title: ("Map"),
+              textStyle: GoogleFonts.roboto(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+              icon: const Icon(Icons.location_on, size: 36),
+              inactiveIcon: const Icon(Icons.location_on_outlined),
+            ),
+            PersistentBottomNavBarItem(
+              title: ("Profile"),
+              textStyle: GoogleFonts.roboto(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
               inactiveIcon: const CircleAvatar(
                 backgroundColor: Colors.grey,
                 backgroundImage: AssetImage("assets/images/AppLogo.png"),
