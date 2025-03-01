@@ -20,11 +20,12 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromARGB(255, 93, 58, 153),
         title: Text(
-          "Event Categories",
+          "Explore Categories",
           style: GoogleFonts.roboto(
             fontSize: 25,
+            color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
         ),

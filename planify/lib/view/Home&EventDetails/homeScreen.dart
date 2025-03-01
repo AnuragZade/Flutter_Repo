@@ -1,17 +1,25 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:planify/controller/topOrganizerController.dart';
+import 'package:planify/view/Categories/topOrganizerScreen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:animations/animations.dart';
 import '../../controller/firebase_event_controller.dart';
 import '../../controller/mapController.dart';
 import '../../model/eventCardModel.dart';
+import 'eventDetails.dart';
+import 'viewAllEvents.dart';
 
 class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
+
   final FirebaseController firebaseNewEventController =
       Get.put(FirebaseController());
+  final CategoryController categoryController = Get.put(CategoryController());
   final RxInt currentIndex = 0.obs;
 
   @override
@@ -19,29 +27,76 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        // 🔹 Enables full-screen scrolling
-        physics: BouncingScrollPhysics(), // 🔹 Smooth scrolling
-        child: Padding(
-          padding: EdgeInsets.all(Get.width * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSearchBar(),
-              SizedBox(height: Get.height * 0.02),
-              _buildCarouselSlider(),
-              SizedBox(height: Get.height * 0.04),
-              Text(
-                "Popular Events ✨",
-                style: GoogleFonts.roboto(
-                  fontSize: Get.width * 0.06,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: EdgeInsets.all(8.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSearchBar(),
+                SizedBox(height: 16.h),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        "Explore Categories",
+                        style: GoogleFonts.roboto(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 120, // Adjust height as needed
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: categoryController.categories.length,
+                        itemBuilder: (context, index) {
+                          return _buildCategoryItem(
+                              categoryController.categories[index]);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: Get.height * 0.02),
-              _buildPopularEvents(), // 🔹 Popular events section remains inside the scrollable view
-            ],
+                SizedBox(height: 16.h),
+                _buildCarouselSlider(),
+                SizedBox(height: 32.h),
+                Row(
+                  children: [
+                    Text(
+                      "Popular Events ✨",
+                      style: GoogleFonts.roboto(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(ViewAllEventScreen(),
+                            transition: Transition.fadeIn,
+                            duration: const Duration(milliseconds: 300));
+                      },
+                      child: Text(
+                        "See all",
+                        style: GoogleFonts.roboto(
+                          fontSize: 14.sp,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16.h),
+                _buildPopularEvents(),
+              ],
+            ),
           ),
         ),
       ),
@@ -55,50 +110,45 @@ class HomeScreen extends StatelessWidget {
       automaticallyImplyLeading: false,
       backgroundColor: const Color.fromARGB(255, 93, 58, 153),
       elevation: 0,
-      toolbarHeight: Get.height * 0.1,
+      toolbarHeight: 70.h,
       flexibleSpace: Padding(
-        padding: EdgeInsets.only(
-          left: Get.width * 0.05,
-          top: Get.height * 0.06,
-          right: Get.width * 0.05,
-          bottom: Get.height * 0.02,
-        ),
+        padding:
+            EdgeInsets.only(left: 16.w, right: 16.w, top: 45.h, bottom: 10.h),
         child: Row(
           children: [
             CircleAvatar(
-              radius: Get.width * 0.08,
+              radius: 30.r,
               backgroundImage:
                   const AssetImage("assets/images/person_vector_2.png"),
             ),
-            SizedBox(width: Get.width * 0.03),
+            SizedBox(width: 12.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Hi Welcome 👋",
                     style: GoogleFonts.roboto(
-                        fontSize: Get.width * 0.04, color: Colors.white)),
+                        fontSize: 14.sp, color: Colors.white)),
                 Text("Anurag",
                     style: GoogleFonts.poppins(
-                        fontSize: Get.width * 0.05,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white)),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("       Current location",
                     style: GoogleFonts.roboto(
-                        fontSize: Get.width * 0.035,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.white)),
                 Row(
                   children: [
-                    Icon(Icons.location_on, color: Colors.red),
+                    const Icon(Icons.location_on, color: Colors.red),
                     Obx(() => Text(
-                          mapController
-                              .currentAddress.value, // ✅ Updated Address
+                          mapController.currentAddress.value,
                           style: GoogleFonts.roboto(color: Colors.white),
                         )),
                   ],
@@ -112,29 +162,39 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildSearchBar() {
-    return Container(
-      height: Get.height * 0.06,
-      padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.search, color: Colors.grey),
-          SizedBox(width: Get.width * 0.02),
-          Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                  border: InputBorder.none, hintText: 'Find amazing events'),
-              onChanged: (query) {
-                // You can implement search logic here
-              },
-            ),
+    return TweenAnimationBuilder(
+      duration: const Duration(milliseconds: 500),
+      tween: Tween<double>(begin: 0, end: 1),
+      builder: (context, double value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, (1 - value) * 20),
+            child: child,
           ),
-          Icon(Icons.filter_list, color: Colors.grey),
-        ],
+        );
+      },
+      child: Container(
+        height: 50.h,
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.r),
+          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.search, color: Colors.grey),
+            SizedBox(width: 8.w),
+            const Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                    border: InputBorder.none, hintText: 'Find amazing events'),
+              ),
+            ),
+            const Icon(Icons.filter_list, color: Colors.grey),
+          ],
+        ),
       ),
     );
   }
@@ -143,22 +203,19 @@ class HomeScreen extends StatelessWidget {
     return Column(
       children: [
         CarouselSlider(
-          items: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset("assets/images/event.jpg", fit: BoxFit.cover),
+          items: List.generate(
+            3,
+            (index) => ClipRRect(
+              borderRadius: BorderRadius.circular(15.r),
+              child: Hero(
+                tag: "event_$index",
+                child:
+                    Image.asset("assets/images/event.jpg", fit: BoxFit.cover),
+              ),
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset("assets/images/event.jpg", fit: BoxFit.cover),
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset("assets/images/event.jpg", fit: BoxFit.cover),
-            ),
-          ],
+          ),
           options: CarouselOptions(
-            height: Get.height * 0.25,
+            height: 200.h,
             autoPlay: true,
             enlargeCenterPage: true,
             onPageChanged: (index, reason) {
@@ -166,11 +223,11 @@ class HomeScreen extends StatelessWidget {
             },
           ),
         ),
-        SizedBox(height: 10),
+        SizedBox(height: 10.h),
         Obx(() => AnimatedSmoothIndicator(
               activeIndex: currentIndex.value,
               count: 3,
-              effect: ExpandingDotsEffect(
+              effect: const ExpandingDotsEffect(
                 dotHeight: 6,
                 dotWidth: 6,
                 activeDotColor: Colors.deepPurple,
@@ -180,104 +237,117 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildEventCard(NewEventData event, int index) {
+    bool isFirebaseImage = event.imageUrl.startsWith("http");
+
+    return OpenContainer(
+      closedElevation: 0,
+      closedBuilder: (context, action) => Card(
+        shadowColor: Colors.grey,
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Hero(
+                tag: "event_$index",
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: isFirebaseImage
+                      ? Image.network(
+                          event.imageUrl,
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset("assets/images/event.jpg",
+                                height: 60, width: 60, fit: BoxFit.cover);
+                          },
+                        )
+                      : Image.asset(
+                          "assets/images/event.jpg",
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(event.eventName,
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16)),
+                    const SizedBox(height: 4),
+                    Text(event.location,
+                        style: TextStyle(color: Colors.grey[600])),
+                    const SizedBox(height: 4),
+                    Text(event.date,
+                        style:
+                            TextStyle(fontSize: 12, color: Colors.grey[700])),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      openBuilder: (context, action) => EventDetailsScreen(
+        eventIndex: index,
+      ),
+    );
+  }
+
   Widget _buildPopularEvents() {
     return Obx(() {
       List<Map<String, dynamic>> eventList = firebaseNewEventController.events;
-
       if (eventList.isEmpty) {
         return Center(child: Text("No Events Found"));
       }
-
       return ListView.builder(
         shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: eventList.length,
         itemBuilder: (context, index) {
-          final eventData = eventList[index];
-
-          final event = NewEventData(
-            eventName: eventData["eventName"] ?? eventData["title"] ?? "",
-            date: eventData["eventDate"] ?? eventData["date"] ?? "",
-            location: eventData["eventLocation"] ?? eventData["location"] ?? "",
-            price: eventData["eventTicketPrice"] ?? eventData["price"] ?? "",
-            organizer:
-                eventData["eventOrganizerName"] ?? eventData["organizer"] ?? "",
-            description:
-                eventData["eventDescription"] ?? eventData["description"] ?? "",
-            imageUrl: (eventData["images"] != null &&
-                    eventData["images"].isNotEmpty)
-                ? eventData["images"][0] // ✅ Fetch first image URL correctly
-                : "https://via.placeholder.com/150",
-            members: int.tryParse(eventData["members"]?.toString() ?? "0") ?? 0,
-          );
-
-          log("✅ Fetched Image URL: ${event.imageUrl}"); // Debugging
-
-          return GestureDetector(
-            onTap: () {
-              firebaseNewEventController.navigateToEventDetails(index);
-            },
-            child: _buildEventCard(event),
-          );
+          final event = NewEventData.fromMap(eventList[index]);
+          return _buildEventCard(event, index);
         },
       );
     });
   }
 
-  Widget _buildEventCard(NewEventData event) {
-    bool isFirebaseImage = event.imageUrl.startsWith("http");
-
-    return Card(
-      shadowColor: Colors.grey,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: isFirebaseImage
-                  ? Image.network(
-                      event.imageUrl,
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(child: CircularProgressIndicator());
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset("assets/images/event.jpg",
-                            height: 60, width: 60, fit: BoxFit.cover);
-                      },
-                    )
-                  : Image.asset(
-                      "assets/images/event.jpg",
-                      height: 60,
-                      width: 60,
-                      fit: BoxFit.cover,
-                    ),
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(event.eventName,
-                      style:
-                         const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  SizedBox(height: 4),
-                  Text(event.location,
-                      style: TextStyle(color: Colors.grey[600])),
-                  SizedBox(height: 4),
-                  Text(event.date,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[700])),
-                ],
+  Widget _buildCategoryItem(Map<String, String> category) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: () =>
+                Get.to(() => TopOrganizerScreen(category: category["name"]!)),
+            child: ClipOval(
+              child: Image.asset(
+                category['image']!,
+                width: 70,
+                height: 70,
+                fit: BoxFit.cover,
               ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            category['name']!,
+            style: GoogleFonts.roboto(fontSize: 12),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

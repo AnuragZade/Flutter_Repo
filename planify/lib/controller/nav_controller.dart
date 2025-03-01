@@ -14,7 +14,7 @@ class NavController extends GetxController {
   final MapController mapController = Get.put(MapController());
   final List<Widget> screens = [
     HomeScreen(),
-    CategoryScreen(),
+    const CategoryScreen(),
     ViewAllEventScreen(),
     MapScreen(eventLocation: ""),
     OrganizerProfileAbout(),

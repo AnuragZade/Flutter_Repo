@@ -19,17 +19,19 @@ class OrganizerDetailsScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: const Color.fromARGB(255, 93, 58, 153),
           title: Text(
             organizer["name"]!,
             style: GoogleFonts.roboto(
               fontSize: 25,
               fontWeight: FontWeight.w600,
+              color: Colors.white,
             ),
           ),
         ),
         body: Column(
           children: [
+            SizedBox(height: 10.h),
             _buildCarouselSlider(organizer),
             SizedBox(height: 10.h),
             const TabBar(
@@ -96,15 +98,13 @@ class OrganizerDetailsScreen extends StatelessWidget {
 Widget _buildCarouselSlider(Map<String, dynamic> organizer) {
   final RxInt currentIndex = 0.obs;
 
-  List<dynamic> events = organizer["events"] is List
-      ? organizer["events"]
-      : [organizer["events"]]; 
+  List<dynamic> events =
+      organizer["events"] is List ? organizer["events"] : [organizer["events"]];
 
   return Column(
     children: [
       CarouselSlider(
         items: events.map<Widget>((event) {
-          
           String imageUrl = event is String ? event : event["imageUrl"];
 
           return Container(
@@ -113,14 +113,13 @@ Widget _buildCarouselSlider(Map<String, dynamic> organizer) {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               image: DecorationImage(
-                image: AssetImage(imageUrl), 
+                image: AssetImage(imageUrl),
                 fit: BoxFit.cover,
               ),
             ),
           );
         }).toList(),
         options: CarouselOptions(
-          
           height: Get.height * 0.25,
           autoPlay: true,
           enlargeCenterPage: true,
@@ -142,6 +141,3 @@ Widget _buildCarouselSlider(Map<String, dynamic> organizer) {
     ],
   );
 }
-
-
-

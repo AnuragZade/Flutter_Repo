@@ -23,11 +23,14 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _loadRoute() async {
-    mapController.currentLocation.value = await mapController.getCurrentLocation();
-    mapController.destinationLocation.value = (await mapController.getLatLngFromCity(widget.eventLocation))!;
+    mapController.currentLocation.value =
+        await mapController.getCurrentLocation();
+    mapController.destinationLocation.value =
+        (await mapController.getLatLngFromCity(widget.eventLocation))!;
 
     if (mapController.destinationLocation.value != null) {
-      await mapController.updatePolyline(mapController.destinationLocation.value);
+      await mapController
+          .updatePolyline(mapController.destinationLocation.value);
     }
     setState(() {});
   }
@@ -36,10 +39,14 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 93, 58, 153),
         title: Text(
           "Google Maps",
-          style: GoogleFonts.roboto(fontSize: 20, fontWeight: FontWeight.w500),
+          style: GoogleFonts.roboto(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
         ),
       ),
       body: Stack(
@@ -47,7 +54,8 @@ class _MapScreenState extends State<MapScreen> {
           Obx(
             () => GoogleMap(
               initialCameraPosition: CameraPosition(
-                target: mapController.currentLocation.value ?? LatLng(19.7515, 75.7139),
+                target: mapController.currentLocation.value ??
+                    LatLng(19.7515, 75.7139),
                 zoom: 7,
               ),
               markers: mapController.markers.toSet(),

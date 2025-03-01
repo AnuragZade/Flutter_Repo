@@ -10,7 +10,7 @@ import 'organizerDetailsScreen.dart';
 // Organizer Screen
 class TopOrganizerScreen extends StatelessWidget {
   final String category;
-  TopOrganizerScreen({super.key, required this.category});
+  const TopOrganizerScreen({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +21,15 @@ class TopOrganizerScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 93, 58, 153),
         title: Text(
           "Top Organizers - $category",
           style: GoogleFonts.roboto(
             fontSize: 20,
             fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),

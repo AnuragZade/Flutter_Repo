@@ -15,12 +15,13 @@ class PersistanrnavCustom extends StatelessWidget {
       builder: (controller) {
         return PersistentTabView(
           context,
-          controller: controller.persistentController, // Use the controller
+          controller: controller.persistentController,
           navBarHeight: 70,
           navBarStyle: NavBarStyle.style1,
           screens: controller.screens,
           items: [
             PersistentBottomNavBarItem(
+              activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
               title: ("Home"),
               textStyle: GoogleFonts.roboto(
                 fontSize: 14,
@@ -30,15 +31,17 @@ class PersistanrnavCustom extends StatelessWidget {
               inactiveIcon: const Icon(Icons.home_outlined),
             ),
             PersistentBottomNavBarItem(
+              activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
               title: ("Categories"),
               textStyle: GoogleFonts.roboto(
-                fontSize: 14,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
               ),
               icon: const Icon(Icons.category, size: 36),
               inactiveIcon: const Icon(Icons.category_outlined),
             ),
             PersistentBottomNavBarItem(
+              activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
               title: ("Events"),
               textStyle: GoogleFonts.roboto(
                 fontSize: 14,
@@ -48,6 +51,7 @@ class PersistanrnavCustom extends StatelessWidget {
               inactiveIcon: const Icon(Icons.bakery_dining_outlined),
             ),
             PersistentBottomNavBarItem(
+              activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
               title: ("Map"),
               textStyle: GoogleFonts.roboto(
                 fontSize: 14,
@@ -57,6 +61,7 @@ class PersistanrnavCustom extends StatelessWidget {
               inactiveIcon: const Icon(Icons.location_on_outlined),
             ),
             PersistentBottomNavBarItem(
+              activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
               title: ("Profile"),
               textStyle: GoogleFonts.roboto(
                 fontSize: 14,

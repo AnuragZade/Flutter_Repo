@@ -118,16 +118,21 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                     SizedBox(height: 30.h),
                     Text(
                       event["title"] ?? "No Title",
-                      style: GoogleFonts.poppins(
+                      style: GoogleFonts.roboto(
                           fontSize: 20.sp, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10.h),
                     Row(
                       children: [
                         Icon(Icons.location_on, color: Colors.red, size: 20.sp),
-                        SizedBox(width: 5.w),
                         Row(
                           children: [
+                            Text(
+                              'Address:',
+                              style: GoogleFonts.roboto(
+                                  fontSize: 15.sp, fontWeight: FontWeight.w400),
+                            ),
+                            SizedBox(width: 4.w),
                             Text(
                               event["location"] ?? "Unknown",
                               style: GoogleFonts.roboto(
@@ -135,8 +140,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
-                            SizedBox(width: 5.w),
-
+                            SizedBox(width: 10.w),
 
                             ///GET DIRECTION
                             GestureDetector(
@@ -170,9 +174,14 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                     SizedBox(height: 10.h),
                     Row(
                       children: [
-                        Icon(Icons.calendar_today,
+                        Icon(Icons.calendar_month_outlined,
                             color: Colors.black, size: 20.sp),
-                        SizedBox(width: 5.w),
+                        Text(
+                          ' Date:',
+                          style: GoogleFonts.roboto(
+                              fontSize: 15.sp, fontWeight: FontWeight.w400),
+                        ),
+                        SizedBox(width: 4.w),
                         Text(
                           event["date"] ?? "Unknown Date",
                           style: GoogleFonts.roboto(

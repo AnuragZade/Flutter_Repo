@@ -120,7 +120,8 @@ class OrganizerProfileAbout extends StatelessWidget {
       isScrollControlled: true,
     );
   }
-void openBottomSheetForNewEvent(BuildContext context) {
+
+  void openBottomSheetForNewEvent(BuildContext context) {
     Get.bottomSheet(
       Container(
         height: Get.height * 0.8,
@@ -145,7 +146,8 @@ void openBottomSheetForNewEvent(BuildContext context) {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.grey)),
-                      child: firebaseNewEventController.selectedImages.length == 1
+                      child: firebaseNewEventController.selectedImages.length ==
+                              1
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.file(
@@ -228,9 +230,14 @@ void openBottomSheetForNewEvent(BuildContext context) {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 93, 58, 153),
           title: Text(
             "Profile",
-            style: GoogleFonts.karla(fontSize: 28, fontWeight: FontWeight.bold),
+            style: GoogleFonts.karla(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
           centerTitle: true,
         ),
