@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,48 +27,50 @@ class MapController extends GetxController {
     log("ENTER");
     getCurrentLocation();
   }
-Future<void> getCurrentLocation() async {
-  try {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Get.snackbar("Error", "Location services are disabled.");
-      return;
-    }
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        Get.snackbar("Error", "Location permissions are permanently denied.");
+  Future<dynamic> getCurrentLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        Get.snackbar("Error", "Location services are disabled.");
         return;
       }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.deniedForever) {
+          Get.snackbar("Error", "Location permissions are permanently denied.");
+          return;
+        }
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      currentLocation.value = LatLng(position.latitude, position.longitude);
+
+      // ✅ Convert Coordinates to Address
+      List<geocoding.Placemark> placemarks =
+          await geocoding.placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        geocoding.Placemark place = placemarks.first;
+        currentAddress.value = "${place.locality}, ${place.administrativeArea}";
+      } else {
+        currentAddress.value = "Unknown location";
+      }
+
+      update(); // Notify UI
+    } catch (e) {
+      Get.snackbar("Error", "Could not fetch location");
+      currentAddress.value = "Location unavailable";
     }
-
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-
-    currentLocation.value = LatLng(position.latitude, position.longitude);
-
-    // ✅ Convert Coordinates to Address
-    List<geocoding.Placemark> placemarks = await geocoding.placemarkFromCoordinates(
-      position.latitude,
-      position.longitude,
-    );
-
-    if (placemarks.isNotEmpty) {
-      geocoding.Placemark place = placemarks.first;
-      currentAddress.value = "${place.locality}, ${place.administrativeArea}";
-    } else {
-      currentAddress.value = "Unknown location";
-    }
-
-    update(); // Notify UI
-  } catch (e) {
-    Get.snackbar("Error", "Could not fetch location");
-    currentAddress.value = "Location unavailable";
   }
-}
 
   Future<void> updatePolyline(LatLng destination) async {
     polylineCoordinates.clear();
@@ -177,5 +181,48 @@ Future<void> getCurrentLocation() async {
     } else {
       Get.snackbar("Error", "Could not open Google Maps");
     }
+  }
+
+  ///USE TO GIVE GET DIRECTONS FOR ANY EVENT
+
+  Future<LatLng?> getLatLngFromCity(String cityName) async {
+    String apiKey = "AIzaSyBZZN7xmQTurBDm_REzavv3vbKlU8umYGM";
+    String url =
+        "https://maps.googleapis.com/maps/api/geocode/json?address=$cityName&key=$apiKey";
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data["status"] == "OK") {
+        double lat = data["results"][0]["geometry"]["location"]["lat"];
+        double lng = data["results"][0]["geometry"]["location"]["lng"];
+        return LatLng(lat, lng);
+      }
+    }
+    return null;
+  }
+
+  ///GET ROUTE FROM START TO DESTINATION
+  ///USE TO GIVE GET DIRECTIONS FOR ANY EVENT
+  Future<List<LatLng>> getRoute(LatLng start, LatLng destination) async {
+    String apiKey = "AIzaSyBZZN7xmQTurBDm_REzavv3vbKlU8umYGM";
+    String url =
+        "https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${destination.latitude},${destination.longitude}&key=$apiKey";
+
+    final response = await http.get(Uri.parse(url));
+
+    List<LatLng> polylineCoordinates = [];
+
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data["routes"].isNotEmpty) {
+        List<PointLatLng> points = PolylinePoints()
+            .decodePolyline(data["routes"][0]["overview_polyline"]["points"]);
+        polylineCoordinates =
+            points.map((p) => LatLng(p.latitude, p.longitude)).toList();
+      }
+    }
+    return polylineCoordinates;
   }
 }

@@ -4,10 +4,33 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:get/get.dart';
 import '../../controller/mapController.dart';
 
-class MapScreen extends StatelessWidget {
-  MapScreen({super.key});
+class MapScreen extends StatefulWidget {
+  final String eventLocation;
 
+  MapScreen({super.key, required this.eventLocation});
+
+  @override
+  _MapScreenState createState() => _MapScreenState();
+}
+
+class _MapScreenState extends State<MapScreen> {
   final MapController mapController = Get.put(MapController());
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRoute();
+  }
+
+  void _loadRoute() async {
+    mapController.currentLocation.value = await mapController.getCurrentLocation();
+    mapController.destinationLocation.value = (await mapController.getLatLngFromCity(widget.eventLocation))!;
+
+    if (mapController.destinationLocation.value != null) {
+      await mapController.updatePolyline(mapController.destinationLocation.value);
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +46,8 @@ class MapScreen extends StatelessWidget {
         children: [
           Obx(
             () => GoogleMap(
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(19.7515, 75.7139),
+              initialCameraPosition: CameraPosition(
+                target: mapController.currentLocation.value ?? LatLng(19.7515, 75.7139),
                 zoom: 7,
               ),
               markers: mapController.markers.toSet(),
@@ -34,9 +57,6 @@ class MapScreen extends StatelessWidget {
               },
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
-              onCameraMove: (CameraPosition position) {
-                // mapController.restrictMapToMaharashtra(position);
-              },
             ),
           ),
           Positioned(

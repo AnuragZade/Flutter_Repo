@@ -7,6 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:planify/view/Ticket&Payments/ticketDetails.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../controller/firebase_event_controller.dart';
 
 class EventDetailsScreen extends StatefulWidget {
@@ -125,12 +126,44 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                       children: [
                         Icon(Icons.location_on, color: Colors.red, size: 20.sp),
                         SizedBox(width: 5.w),
-                        Text(
-                          event["location"] ?? "Unknown",
-                          style: GoogleFonts.roboto(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              event["location"] ?? "Unknown",
+                              style: GoogleFonts.roboto(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+
+
+                            ///GET DIRECTION
+                            GestureDetector(
+                              onTap: () {
+                                void openGoogleMaps(String cityName) async {
+                                  String googleUrl =
+                                      "https://www.google.com/maps/dir/?api=1&destination=$cityName";
+                                  if (await canLaunchUrl(
+                                      Uri.parse(googleUrl))) {
+                                    await launchUrl(Uri.parse(googleUrl));
+                                  } else {
+                                    throw 'Could not open Google Maps';
+                                  }
+                                }
+
+                                openGoogleMaps(event["location"] ?? "Unknown");
+                              },
+                              child: Text(
+                                "Get Directions",
+                                style: GoogleFonts.roboto(
+                                  fontSize: 15.sp,
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
