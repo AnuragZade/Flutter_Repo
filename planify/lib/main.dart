@@ -4,11 +4,14 @@ import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:planify/view/Splash&Login&Signup/splashScreen.dart';
 import 'package:planify/controller/eventDeatilsController.dart';
-import 'package:planify/view/navBar.dart';
+import 'controller/mapController.dart';
+import 'view/Home&EventDetails/homeScreen.dart';
+import 'view/navBar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  Get.put(MapController());
   Get.put(EventDetailsController());
 
   runApp(const MainApp());
@@ -26,7 +29,7 @@ class MainApp extends StatelessWidget {
       builder: (context, child) {
         return const GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          home: PersistanrnavCustom(),
+          home: Splashscreen(),
         );
       },
     );

@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -255,16 +258,59 @@ class OrganizerProfileAbout extends StatelessWidget {
 
             const SizedBox(height: 10),
             // Username (Dynamic)
-            Obx(() => Text(
-                  editProfileController.username.value.isNotEmpty
-                      ? editProfileController.username.value
-                      : "Your Name",
-                  style: GoogleFonts.ptSans(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
+            FutureBuilder<DocumentSnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('planify_username')
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text(
+                    "Loading...",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  );
+                }
+                if (snapshot.hasError) {
+                  log('Error fetching data: ${snapshot.error}');
+                  return Text(
+                    "Error loading data",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  );
+                }
+                if (!snapshot.hasData || !snapshot.data!.exists) {
+                  log('No data found for user ID: ${FirebaseAuth.instance.currentUser!.uid}');
+                  return Text(
+                    "Unknown User",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  );
+                }
+
+                String username = snapshot.data!['name'];
+                log('Fetched username: $username');
+
+                return Text(
+                  username,
+                  style: GoogleFonts.poppins(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w500,
                     color: Colors.black,
                   ),
-                )),
+                );
+              },
+            ),
+
             TextButton(
               onPressed: () => openEditProfileBottomSheet(context),
               child: Text("Edit Profile",

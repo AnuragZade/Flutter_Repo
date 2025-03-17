@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:planify/view/Splash&Login&Signup/logIn_Screen.dart';
 import 'package:planify/view/Splash&Login&Signup/resetPasswordScreen.dart';
 import 'package:planify/view/Splash&Login&Signup/signUp_Screen.dart';
 import 'package:planify/view/navBar.dart';
 
 import '../../controller/logInController.dart';
+import '../../controller/nav_controller.dart';
 
 class LogInScreen extends StatelessWidget {
-  final LoginController controller = Get.put(LoginController());
+  final LoginController loginController = Get.put(LoginController());
+  final NavController navController = Get.put(NavController());
 
   LogInScreen({super.key});
 
@@ -48,16 +51,17 @@ class LogInScreen extends StatelessWidget {
                       style: GoogleFonts.poppins(
                           fontSize: 30.sp, fontWeight: FontWeight.w600)),
                   SizedBox(height: 20.h),
-                  _buildTextField(controller.emailController, "abc@email.com",
-                      Icons.email_outlined),
+                  _buildTextField(loginController.emailController,
+                      "abc@email.com", Icons.email_outlined),
                   SizedBox(height: 20.h),
-                  _buildTextField(controller.passwordController,
+                  _buildTextField(loginController.passwordController,
                       "Your password", Icons.lock_outline,
                       isPassword: true),
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () => Get.to(() => ForgotPasswordScreen()),
+                      onPressed: () =>
+                          Get.to(() => const ForgotPasswordScreen()),
                       child: Text("Forgot Password ?",
                           style: GoogleFonts.ptSans(
                               fontSize: 17.sp, fontWeight: FontWeight.w700)),
@@ -73,7 +77,7 @@ class LogInScreen extends StatelessWidget {
                   SizedBox(height: 30.h),
                   GestureDetector(
                     onTap: () {
-                      Get.offAll(PersistanrnavCustom());
+                      Get.offAll(const PersistanrnavCustom());
                     },
                     child: _buildSocialButton(
                         "assets/images/GOOGLE.png", "Login with Google"),
@@ -122,10 +126,10 @@ class LogInScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildSignInButton() {
+Widget _buildSignInButton() {
+  return Obx(() {
     return GestureDetector(
-      onTap: () => controller.login(),
+      onTap: () => loginController.signInWithEmail(), // ✅ Controller handles navigation
       child: Container(
         height: 60.h,
         width: double.infinity,
@@ -134,22 +138,26 @@ class LogInScreen extends StatelessWidget {
           color: const Color.fromARGB(255, 93, 58, 153),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.5),
-                spreadRadius: 1.5,
-                blurRadius: 5,
-                offset: const Offset(0, 7)),
+              color: Colors.black.withOpacity(0.5),
+              spreadRadius: 1.5,
+              blurRadius: 5,
+              offset: const Offset(0, 7),
+            ),
           ],
         ),
         child: Center(
-          child: Text("SIGN IN",
-              style: GoogleFonts.ptSans(
-                  fontSize: 27.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white)),
+          child: loginController.isLoading.value
+              ? const CircularProgressIndicator(color: Colors.white)
+              : Text("SIGN IN",
+                  style: GoogleFonts.ptSans(
+                      fontSize: 27.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white)),
         ),
       ),
     );
-  }
+  });
+}
 
   Widget _buildSocialButton(String imagePath, String text) {
     return Padding(
@@ -162,10 +170,10 @@ class LogInScreen extends StatelessWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(255, 103, 101, 100).withOpacity(0.3),
+              color: const Color.fromARGB(255, 103, 101, 100).withOpacity(0.3),
               spreadRadius: 1,
               blurRadius: 7,
-              offset: Offset(0, 6),
+              offset: const Offset(0, 6),
             ),
           ],
         ),

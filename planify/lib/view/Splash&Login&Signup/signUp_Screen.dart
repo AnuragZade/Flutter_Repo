@@ -49,27 +49,52 @@ class SignUpScreen extends StatelessWidget {
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.r),
-                    color: Color.fromARGB(255, 93, 58, 153),
+                    color: const Color.fromARGB(255, 93, 58, 153),
                     boxShadow: [
                       BoxShadow(
-                        color:
-                            Color.fromARGB(255, 103, 101, 100).withOpacity(0.5),
+                        color: const Color.fromARGB(255, 103, 101, 100)
+                            .withOpacity(0.5),
                         spreadRadius: 1.5,
                         blurRadius: 5,
-                        offset: Offset(0, 7),
+                        offset: const Offset(0, 7),
                       )
                     ],
                   ),
-                  child: Center(
-                    child: Text(
-                      "SIGN UP",
-                      style: GoogleFonts.ptSans(
-                        fontSize: 27.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  child: Obx(() {
+                    return controller.isLoading.value
+                        ? const Center(child: CircularProgressIndicator())
+                        : GestureDetector(
+                            onTap: controller.signUp,
+                            child: Container(
+                              height: 60.h,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15.r),
+                                color: const Color.fromARGB(255, 93, 58, 153),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        const Color.fromARGB(255, 103, 101, 100)
+                                            .withOpacity(0.5),
+                                    spreadRadius: 1.5,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 7),
+                                  )
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "SIGN UP",
+                                  style: GoogleFonts.ptSans(
+                                    fontSize: 27.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                  }),
                 ),
               ),
               SizedBox(height: 20.h),
@@ -79,7 +104,7 @@ class SignUpScreen extends StatelessWidget {
                   style: GoogleFonts.b612(
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w500,
-                    color: Color.fromARGB(255, 107, 105, 105),
+                    color: const Color.fromARGB(255, 107, 105, 105),
                   ),
                 ),
               ),
@@ -133,15 +158,15 @@ class SignUpScreen extends StatelessWidget {
           hintStyle: TextStyle(
             fontSize: 17.sp,
             fontWeight: FontWeight.w500,
-            color: Color.fromRGBO(117, 115, 115, 1),
+            color: const Color.fromRGBO(117, 115, 115, 1),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(color: Colors.black),
+            borderSide: const BorderSide(color: Colors.black),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
-            borderSide: BorderSide(color: Colors.black),
+            borderSide: const BorderSide(color: Colors.black),
           ),
         ),
       ),
@@ -159,10 +184,10 @@ class SignUpScreen extends StatelessWidget {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(255, 103, 101, 100).withOpacity(0.3),
+              color: const Color.fromARGB(255, 103, 101, 100).withOpacity(0.3),
               spreadRadius: 1,
               blurRadius: 7,
-              offset: Offset(0, 6),
+              offset: const Offset(0, 6),
             ),
           ],
         ),

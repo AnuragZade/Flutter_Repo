@@ -1,8 +1,11 @@
 import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:planify/controller/signUpController.dart';
 import 'package:planify/controller/topOrganizerController.dart';
 import 'package:planify/view/Categories/topOrganizerScreen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -21,6 +24,7 @@ class HomeScreen extends StatelessWidget {
       Get.put(FirebaseController());
   final CategoryController categoryController = Get.put(CategoryController());
   final RxInt currentIndex = 0.obs;
+  final SignUpController signUpController = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
@@ -128,11 +132,47 @@ class HomeScreen extends StatelessWidget {
                 Text("Hi Welcome 👋",
                     style: GoogleFonts.roboto(
                         fontSize: 14.sp, color: Colors.white)),
-                Text("Anurag",
-                    style: GoogleFonts.poppins(
+                // ✅ Display dynamic username here
+                FutureBuilder<DocumentSnapshot>(
+                  future: FirebaseFirestore.instance
+                      .collection('planify_username')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text(
+                        "Loading...",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+                    if (snapshot.hasError ||
+                        !snapshot.hasData ||
+                        !snapshot.data!.exists) {
+                      return Text(
+                        "Unknown User",
+                        style: GoogleFonts.poppins(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    }
+
+                    String username = snapshot.data!['name'];
+                    return Text(
+                      username,
+                      style: GoogleFonts.poppins(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white)),
+                        color: Colors.white,
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
             const Spacer(),
@@ -208,7 +248,7 @@ class HomeScreen extends StatelessWidget {
             (index) => ClipRRect(
               borderRadius: BorderRadius.circular(15.r),
               child: Hero(
-                tag: "event_$index",
+                tag: "carousel_event_$index", // ✅ Unique tag for carousel
                 child:
                     Image.asset("assets/images/event.jpg", fit: BoxFit.cover),
               ),
@@ -251,7 +291,7 @@ class HomeScreen extends StatelessWidget {
           child: Row(
             children: [
               Hero(
-                tag: "event_$index",
+                tag: "card_event_$index", // ✅ Unique tag for event cards
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: isFirebaseImage
@@ -310,7 +350,7 @@ class HomeScreen extends StatelessWidget {
     return Obx(() {
       List<Map<String, dynamic>> eventList = firebaseNewEventController.events;
       if (eventList.isEmpty) {
-        return Center(child: Text("No Events Found"));
+        return const Center(child: Text("No Events Found"));
       }
       return ListView.builder(
         shrinkWrap: true,

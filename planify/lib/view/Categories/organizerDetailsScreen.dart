@@ -10,7 +10,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 // Organizer Details Screen with Details at the Top and TabBar
 class OrganizerDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> organizer;
-  OrganizerDetailsScreen({super.key, required this.organizer});
+  const OrganizerDetailsScreen({super.key, required this.organizer});
 
   @override
   Widget build(BuildContext context) {
