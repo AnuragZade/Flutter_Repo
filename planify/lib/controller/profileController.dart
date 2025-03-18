@@ -1,26 +1,4 @@
-// import 'package:get/get.dart';
-
-// class ProfileController extends GetxController {
-//   var organizerName = ''.obs;
-//   var eventName = ''.obs;
-//   var eventDate = ''.obs;
-//   var ticketPrice = ''.obs;
-//   var address = ''.obs;
-//   var description = ''.obs;
-
-//   void updateProfile(String organizer, String event, String date, String price, String addr, String desc) {
-//     organizerName.value = organizer;
-//     eventName.value = event;
-//     eventDate.value = date;
-//     ticketPrice.value = price;
-//     address.value = addr;
-//     description.value = desc;
-//   }
-// }
-
-
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

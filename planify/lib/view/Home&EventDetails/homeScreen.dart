@@ -243,21 +243,30 @@ class HomeScreen extends StatelessWidget {
     return Column(
       children: [
         CarouselSlider(
-          items: List.generate(
-            3,
-            (index) => ClipRRect(
+          items: [
+            "assets/images/music/music3.jpg",
+            "assets/images/wedding/wedding10.jpg",
+            "assets/images/music/music6.jpg",
+            "assets/images/tech/tech1.jpg"
+          ].map((imagePath) {
+            return ClipRRect(
               borderRadius: BorderRadius.circular(15.r),
-              child: Hero(
-                tag: "carousel_event_$index", // ✅ Unique tag for carousel
-                child:
-                    Image.asset("assets/images/event.jpg", fit: BoxFit.cover),
+              child: AspectRatio(
+                aspectRatio: 16 / 9, // ✅ Consistent landscape aspect ratio
+                child: Image.asset(
+                  imagePath,
+                  width: 1.sw,
+                  height: 200.h,
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-          ),
+            );
+          }).toList(),
           options: CarouselOptions(
             height: 200.h,
             autoPlay: true,
             enlargeCenterPage: true,
+            viewportFraction: 0.85,
             onPageChanged: (index, reason) {
               currentIndex.value = index;
             },
