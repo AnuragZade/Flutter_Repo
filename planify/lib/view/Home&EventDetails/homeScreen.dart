@@ -112,91 +112,134 @@ class HomeScreen extends StatelessWidget {
 
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: const Color.fromARGB(255, 93, 58, 153),
+      backgroundColor: Colors.transparent, // Transparent to show gradient
       elevation: 0,
       toolbarHeight: 70.h,
-      flexibleSpace: Padding(
-        padding:
-            EdgeInsets.only(left: 16.w, right: 16.w, top: 45.h, bottom: 10.h),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 30.r,
-              backgroundImage:
-                  const AssetImage("assets/images/person_vector_2.png"),
-            ),
-            SizedBox(width: 12.w),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Hi Welcome 👋",
-                    style: GoogleFonts.roboto(
-                        fontSize: 14.sp, color: Colors.white)),
-                // ✅ Display dynamic username here
-                FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance
-                      .collection('planify_username')
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
-                      .get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text(
-                        "Loading...",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      );
-                    }
-                    if (snapshot.hasError ||
-                        !snapshot.hasData ||
-                        !snapshot.data!.exists) {
-                      return Text(
-                        "Unknown User",
-                        style: GoogleFonts.poppins(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      );
-                    }
-
-                    String username = snapshot.data!['name'];
-                    return Text(
-                      username,
-                      style: GoogleFonts.poppins(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            const Spacer(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("       Current location",
-                    style: GoogleFonts.roboto(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white)),
-                Row(
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepPurpleAccent, Colors.black87],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.only(right: 16.w, left: 16.w, top: 26.h),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 30.r,
+                backgroundImage:
+                    const AssetImage("assets/images/person_vector_2.png"),
+              ),
+              SizedBox(width: 12.w),
+              Padding(
+                padding: EdgeInsets.only(top: 16.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.location_on, color: Colors.red),
-                    Obx(() => Text(
-                          mapController.currentAddress.value,
-                          style: GoogleFonts.roboto(color: Colors.white),
-                        )),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        "Hi Welcome 👋",
+                        style: GoogleFonts.roboto(
+                          fontSize: 14.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    FutureBuilder<DocumentSnapshot>(
+                      future: FirebaseFirestore.instance
+                          .collection('planify_username')
+                          .doc(FirebaseAuth.instance.currentUser!.uid)
+                          .get(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return _loadingText();
+                        }
+                        if (snapshot.hasError ||
+                            !snapshot.hasData ||
+                            !snapshot.data!.exists) {
+                          return _unknownUserText();
+                        }
+                        String username = snapshot.data!['name'];
+                        return _usernameText(username);
+                      },
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ],
+              ),
+              const Spacer(),
+              Padding(
+                padding: EdgeInsets.only(top: 16.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "    Current location",
+                      style: GoogleFonts.roboto(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on, color: Colors.red),
+                        Obx(
+                          () => SizedBox(
+                            width: 100.w, // Prevents overflow
+                            child: Text(
+                              mapController.currentAddress.value,
+                              style: GoogleFonts.roboto(
+                                fontSize: 12.sp,
+                                color: Colors.white,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+// Helper functions for better readability and consistency
+  Widget _loadingText() => Text(
+        "Loading...",
+        style: GoogleFonts.poppins(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+
+  Widget _unknownUserText() => Text(
+        "Unknown User",
+        style: GoogleFonts.poppins(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+
+  Widget _usernameText(String username) {
+    String firstName = username.split(' ')[0];
+    return Text(
+      firstName,
+      style: GoogleFonts.poppins(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
       ),
     );
   }
@@ -288,70 +331,122 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildEventCard(NewEventData event, int index) {
     bool isFirebaseImage = event.imageUrl.startsWith("http");
-
     return OpenContainer(
       closedElevation: 0,
-      closedBuilder: (context, action) => Card(
-        shadowColor: Colors.grey,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
+      closedColor: Colors.transparent,
+      closedBuilder: (context, action) => Container(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.deepPurpleAccent, Colors.black87],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Card(
+          elevation: 6,
+          color: Colors.transparent, // Transparent to show the gradient
+          shadowColor: Colors.black.withOpacity(0.2),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Hero(
-                tag: "card_event_$index", // ✅ Unique tag for event cards
+                tag: "card_event_$index",
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
                   child: isFirebaseImage
                       ? Image.network(
                           event.imageUrl,
-                          height: 60,
-                          width: 60,
+                          height: 120,
+                          width: double.infinity,
                           fit: BoxFit.cover,
                           loadingBuilder: (context, child, loadingProgress) {
                             if (loadingProgress == null) return child;
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return Container(
+                              height: 160,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator(),
+                            );
                           },
                           errorBuilder: (context, error, stackTrace) {
-                            return Image.asset("assets/images/event.jpg",
-                                height: 60, width: 60, fit: BoxFit.cover);
+                            return Image.asset(
+                              "assets/images/event.jpg",
+                              height: 120,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            );
                           },
                         )
                       : Image.asset(
                           "assets/images/event.jpg",
-                          height: 60,
-                          width: 60,
+                          height: 120,
+                          width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                 ),
               ),
-              const SizedBox(width: 10),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(event.eventName,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 4),
-                    Text(event.location,
-                        style: TextStyle(color: Colors.grey[600])),
-                    const SizedBox(height: 4),
-                    Text(event.date,
-                        style:
-                            TextStyle(fontSize: 12, color: Colors.grey[700])),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        event.eventName,
+                        style: GoogleFonts.roboto(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors
+                              .white, // Ensure text contrasts with gradient
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              event.location,
+                              style: GoogleFonts.roboto(
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 14),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.calendar_today,
+                              size: 16, color: Colors.white),
+                          const SizedBox(width: 4),
+                          Text(
+                            event.date,
+                            style: GoogleFonts.roboto(
+                                fontSize: 14,
+                                color: Colors.white.withOpacity(0.8)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
-      openBuilder: (context, action) => EventDetailsScreen(
-        eventIndex: index,
-      ),
+      openBuilder: (context, action) => EventDetailsScreen(eventIndex: index),
     );
   }
 
@@ -361,9 +456,15 @@ class HomeScreen extends StatelessWidget {
       if (eventList.isEmpty) {
         return const Center(child: Text("No Events Found"));
       }
-      return ListView.builder(
+      return GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2, // 2 events in one row
+          crossAxisSpacing: 12, // Spacing between columns
+          mainAxisSpacing: 12, // Spacing between rows
+          childAspectRatio: 0.75, // Adjust to maintain card aspect ratio
+        ),
         itemCount: eventList.length,
         itemBuilder: (context, index) {
           final event = NewEventData.fromMap(eventList[index]);

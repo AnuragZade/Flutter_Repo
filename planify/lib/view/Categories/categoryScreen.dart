@@ -20,7 +20,17 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 93, 58, 153),
+        backgroundColor: Colors.transparent, // Set transparent to show gradient
+        elevation: 0, // Removes shadow for a clean look
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurpleAccent, Colors.black87],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         title: Text(
           "Explore Categories",
           style: GoogleFonts.roboto(

@@ -50,16 +50,16 @@ class PersistanrnavCustom extends StatelessWidget {
               icon: const Icon(Icons.bakery_dining, size: 36),
               inactiveIcon: const Icon(Icons.bakery_dining_outlined),
             ),
-            PersistentBottomNavBarItem(
-              activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
-              title: ("Map"),
-              textStyle: GoogleFonts.roboto(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-              icon: const Icon(Icons.location_on, size: 36),
-              inactiveIcon: const Icon(Icons.location_on_outlined),
-            ),
+            // PersistentBottomNavBarItem(
+            //   activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
+            //   title: ("Map"),
+            //   textStyle: GoogleFonts.roboto(
+            //     fontSize: 14,
+            //     fontWeight: FontWeight.w600,
+            //   ),
+            //   icon: const Icon(Icons.location_on, size: 36),
+            //   inactiveIcon: const Icon(Icons.location_on_outlined),
+            // ),
             PersistentBottomNavBarItem(
               activeColorPrimary: const Color.fromARGB(255, 93, 58, 153),
               title: ("Profile"),

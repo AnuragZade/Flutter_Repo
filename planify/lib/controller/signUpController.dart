@@ -21,7 +21,7 @@ class SignUpController extends GetxController {
       Get.snackbar("Error", "Passwords do not match",
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM);
+          snackPosition: SnackPosition.TOP);
       return;
     }
 
@@ -53,13 +53,13 @@ class SignUpController extends GetxController {
         Get.snackbar("Success", "Account created successfully!",
             backgroundColor: Colors.green,
             colorText: Colors.white,
-            snackPosition: SnackPosition.BOTTOM);
+            snackPosition: SnackPosition.TOP);
       }
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Error", e.message ?? "An error occurred",
           backgroundColor: Colors.red,
           colorText: Colors.white,
-          snackPosition: SnackPosition.BOTTOM);
+          snackPosition: SnackPosition.TOP);
     } finally {
       isLoading.value = false;
     }

@@ -6,7 +6,7 @@ import 'package:planify/view/Categories/categoryScreen.dart';
 import 'package:planify/view/Home&EventDetails/viewAllEvents.dart';
 import '../mapScreen.dart';
 import '../view/Home&EventDetails/homeScreen.dart';
-import '../view/OrganizerProfile/profile_About.dart';
+import '../view/Profile/profile_About.dart';
 
 class NavController extends GetxController {
   late PersistentTabController persistentController;
@@ -16,7 +16,7 @@ class NavController extends GetxController {
     HomeScreen(),
     const CategoryScreen(),
     ViewAllEventScreen(),
-    MapScreen(eventLocation: ""),
+    // MapScreen(eventLocation: ""),
     OrganizerProfileAbout(),
   ];
 
