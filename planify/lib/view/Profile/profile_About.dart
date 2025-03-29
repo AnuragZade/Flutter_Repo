@@ -27,20 +27,20 @@ class OrganizerProfileAbout extends StatelessWidget {
 
   final ImagePicker picker = ImagePicker();
 
-  Widget _buildTextField(
-      String label, TextEditingController controller, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      ),
-    );
-  }
+  // Widget _buildTextField(
+  //     String label, TextEditingController controller, IconData icon) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //     child: TextField(
+  //       controller: controller,
+  //       decoration: InputDecoration(
+  //         labelText: label,
+  //         prefixIcon: Icon(icon),
+  //         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void openEditProfileBottomSheet(BuildContext context) {
     final EditProfileController editProfileController =
@@ -126,93 +126,103 @@ class OrganizerProfileAbout extends StatelessWidget {
 
   void openBottomSheetForNewEvent(BuildContext context) {
     Get.bottomSheet(
-      Container(
-        height: 0.85.sh,
-        padding: EdgeInsets.all(20.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FadeInUp(
-                child: Text(
-                  'Add New Event',
-                  style: GoogleFonts.ptSans(
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              SizedBox(height: 15.h),
-              GestureDetector(
-                onTap: () => firebaseNewEventController.pickImages(),
-                child: Obx(
-                  () => AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    height: 180.h,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: firebaseNewEventController.selectedImages.length == 1
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(12.r),
-                            child: Image.file(
-                              firebaseNewEventController.selectedImages.first,
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          )
-                        : Center(
-                            child: Text(
-                              "Tap to add exactly 1 image",
-                              style: GoogleFonts.ptSans(fontSize: 16.sp),
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10.h),
-              ..._buildTextFields(),
-              SizedBox(height: 15.h),
-              BounceInUp(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 14.h, horizontal: 30.w),
-                  ),
-                  onPressed: () {
-                    if (firebaseNewEventController.selectedImages.length != 1) {
-                      Get.snackbar("Error", "Please select exactly 1 image");
-                      return;
-                    }
-                    firebaseNewEventController.uploadImage();
-                  },
+      WillPopScope(
+        onWillPop: () async {
+          firebaseNewEventController.selectedImages.clear();
+          return true;
+        },
+        child: Container(
+          height: 0.85.sh,
+          padding: EdgeInsets.all(20.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FadeInUp(
                   child: Text(
-                    "Add Event",
+                    'Add New Event',
                     style: GoogleFonts.ptSans(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              ),
-            ],
+                SizedBox(height: 15.h),
+                GestureDetector(
+                  onTap: () => firebaseNewEventController.pickImages(),
+                  child: Obx(
+                    () => AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      height: 180.h,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.r),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: firebaseNewEventController
+                              .selectedImages.isNotEmpty
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(12.r),
+                              child: Image.file(
+                                firebaseNewEventController.selectedImages.first,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            )
+                          : Center(
+                              child: Text(
+                                "Tap to add exactly 1 image",
+                                style: GoogleFonts.ptSans(fontSize: 16.sp),
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                ..._buildTextFields(),
+                SizedBox(height: 15.h),
+                BounceInUp(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 14.h, horizontal: 30.w),
+                    ),
+                    onPressed: () {
+                      if (firebaseNewEventController.selectedImages.length !=
+                          1) {
+                        Get.snackbar("Error", "Please select exactly 1 image");
+                        return;
+                      }
+                      firebaseNewEventController.uploadImage();
+                    },
+                    child: Text(
+                      "Add Event",
+                      style: GoogleFonts.ptSans(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       isScrollControlled: true,
-    );
+    ).whenComplete(() {
+      firebaseNewEventController.selectedImages.clear();
+    });
   }
 
   List<Widget> _buildTextFields() {
@@ -262,7 +272,17 @@ class OrganizerProfileAbout extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: const Color.fromARGB(255, 93, 58, 153),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.deepPurpleAccent, Colors.black87],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
           title: Text(
             "Profile",
             style: GoogleFonts.karla(

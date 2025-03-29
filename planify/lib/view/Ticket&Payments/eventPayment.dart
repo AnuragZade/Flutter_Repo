@@ -16,8 +16,17 @@ class PaymentScreen extends StatelessWidget {
     final PaymentController controller = Get.put(PaymentController());
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 93, 58, 153),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurpleAccent, Colors.black87],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         title: Text(
           "Payment",
           style: GoogleFonts.ptSans(
@@ -27,13 +36,10 @@ class PaymentScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
-        leading: const Icon(Icons.arrow_back_ios, color: Colors.white),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(Icons.add_card, color: Colors.white),
-          ),
-        ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.w),
@@ -42,60 +48,17 @@ class PaymentScreen extends StatelessWidget {
           children: [
             Text("Payment Method",
                 style: GoogleFonts.roboto(
-                    fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
             SizedBox(height: 10.h),
             _buildPaymentMethod(controller, 'Apple Pay', Icons.apple),
             _buildPaymentMethod(controller, 'PayPal', Icons.paypal_outlined),
             _buildPaymentMethod(controller, 'Google Pay', Icons.payments),
             _buildPaymentMethod(controller, 'Credit Card', Icons.credit_card),
-            SizedBox(height: 30.h),
-            Text("Add Voucher",
-                style: GoogleFonts.roboto(
-                    fontSize: 18.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10.h),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "VOUCHER CODE",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.r),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.h, horizontal: 10.w),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10.w),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    padding:
-                        EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
-                  ),
-                  child: Text("APPLY",
-                      style: GoogleFonts.roboto(color: Colors.white)),
-                ),
-              ],
-            ),
-            Spacer(),
-            ElevatedButton(
-              onPressed: () => Get.to(() => TicketScreen()),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r)),
-                padding:
-                    EdgeInsets.symmetric(vertical: 15.h, horizontal: 100.w),
-              ),
-              child: Text("CHECKOUT",
-                  style: GoogleFonts.roboto(
-                      color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold)),
-            ),
+            const Spacer(),
+            _gradientButton("CHECKOUT", () => Get.to(() => TicketScreen())),
+            SizedBox(height: 20.h),
           ],
         ),
       ),
@@ -106,37 +69,76 @@ class PaymentScreen extends StatelessWidget {
       PaymentController controller, String title, IconData icon) {
     return Obx(() => GestureDetector(
           onTap: () => controller.selectedPaymentMethod.value = title,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
             margin: EdgeInsets.symmetric(vertical: 5.h),
             padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 15.w),
             decoration: BoxDecoration(
-              color: controller.selectedPaymentMethod.value == title
-                  ? const Color.fromARGB(255, 93, 58, 153)
-                  : Colors.grey[200],
-              borderRadius: BorderRadius.circular(8.r),
+              gradient: controller.selectedPaymentMethod.value == title
+                  ? const LinearGradient(
+                      colors: [Colors.deepPurpleAccent, Colors.black],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : const LinearGradient(
+                      colors: [Colors.grey, Colors.black12],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+              borderRadius: BorderRadius.circular(12.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.1),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                )
+              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Icon(icon,
-                    size: 30.sp,
-                    color: controller.selectedPaymentMethod.value == title
-                        ? Colors.white
-                        : Colors.black),
+                Icon(icon, size: 30.sp, color: Colors.white),
                 SizedBox(width: 10.w),
                 Text(
                   title,
                   style: GoogleFonts.roboto(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
-                    color: controller.selectedPaymentMethod.value == title
-                        ? Colors.white
-                        : Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
           ),
         ));
+  }
+
+  Widget _gradientButton(String text, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 15.h),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.deepPurpleAccent, Colors.black],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: GoogleFonts.roboto(
+              color: Colors.white,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

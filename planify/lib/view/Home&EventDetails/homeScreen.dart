@@ -40,6 +40,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 16.h),
                 _buildSearchBar(),
                 SizedBox(height: 16.h),
                 Column(
@@ -89,8 +90,8 @@ class HomeScreen extends StatelessWidget {
                       child: Text(
                         "See all",
                         style: GoogleFonts.roboto(
-                          fontSize: 14.sp,
-                          color: Colors.blue,
+                          fontSize: 16.sp,
+                          color: Colors.deepPurple,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -262,6 +263,7 @@ class HomeScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 12.w),
         decoration: BoxDecoration(
           color: Colors.white,
+          border: Border.all(color: Colors.grey.withOpacity(0.5)),
           borderRadius: BorderRadius.circular(10.r),
           boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
         ),

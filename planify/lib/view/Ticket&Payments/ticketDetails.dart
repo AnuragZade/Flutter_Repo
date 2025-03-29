@@ -14,76 +14,83 @@ class TicketDetailsScreen extends StatelessWidget {
         Get.put(TicketDetailsController());
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text(
-          "Ticket",
+          "Ticket Details",
           style: GoogleFonts.ptSans(
-            fontSize: 26.sp,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
+              fontSize: 26.sp,
+              fontWeight: FontWeight.w700,
+              color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 93, 58, 153),
-        leading: const Icon(Icons.arrow_back_ios, color: Colors.white),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(Icons.more_vert, color: Colors.white),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Ticket Type",
-                style: GoogleFonts.roboto(
-                    fontSize: 18.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10.h),
-            Row(
-              children: [
-                _buildTicketTypeButton(ticketDetailsController, 'VIP'),
-                SizedBox(width: 10.w),
-                _buildTicketTypeButton(ticketDetailsController, 'Economy'),
-              ],
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurpleAccent, Colors.black87],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-            SizedBox(height: 30.h),
-            Text("Seat",
-                style: GoogleFonts.roboto(
-                    fontSize: 18.sp, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10.h),
-            _buildSeatCounter(ticketDetailsController),
-            SizedBox(height: 30.h),
-            const Divider(),
-            SizedBox(height: 10.h),
-            Obx(() => _buildPriceDetails(ticketDetailsController)),
-            const Spacer(),
-            const Divider(),
-            SizedBox(height: 10.h),
-            Obx(() => _buildTotalPrice(ticketDetailsController)),
-            SizedBox(height: 20.h),
-            Center(
-              child: ElevatedButton(
-                onPressed: () => Get.to(() => const PaymentScreen()),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r)),
-                  padding:
-                      EdgeInsets.symmetric(vertical: 15.h, horizontal: 100.w),
+          ),
+        ),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          onPressed: () => Get.back(),
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _glassContainer(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Ticket Type",
+                              style: GoogleFonts.roboto(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                          SizedBox(height: 10.h),
+                          Row(
+                            children: [
+                              _buildTicketTypeButton(
+                                  ticketDetailsController, 'VIP'),
+                              SizedBox(width: 10.w),
+                              _buildTicketTypeButton(
+                                  ticketDetailsController, 'Economy'),
+                            ],
+                          ),
+                          SizedBox(height: 20.h),
+                          Text("Seat Selection",
+                              style: GoogleFonts.roboto(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                          SizedBox(height: 10.h),
+                          _buildSeatCounter(ticketDetailsController),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30.h),
+                    _buildTotalPrice(ticketDetailsController),
+                  ],
                 ),
-                child: Text("CONTINUE",
-                    style: GoogleFonts.roboto(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold)),
               ),
             ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(16.w),
+            child: _gradientButton(
+                "CONTINUE", () => Get.to(() => const PaymentScreen())),
+          ),
+        ],
       ),
     );
   }
@@ -91,105 +98,127 @@ class TicketDetailsScreen extends StatelessWidget {
   Widget _buildTicketTypeButton(
       TicketDetailsController controller, String type) {
     return Expanded(
-      child: Obx(() => GestureDetector(
-            onTap: () => controller.selectedTicketType.value = type,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: controller.selectedTicketType.value == type
-                    ? const Color.fromARGB(255, 93, 58, 153)
-                    : Colors.purple[100],
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Text(
-                type,
-                style: GoogleFonts.roboto(
-                  color: controller.selectedTicketType.value == type
-                      ? Colors.white
-                      : Colors.black,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: () => controller.selectedTicketType.value = type,
+        child: _glassContainer(
+          padding: EdgeInsets.symmetric(vertical: 12.h),
+          child: Obx(() => AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                child: Text(
+                  type,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                    color: controller.selectedTicketType.value == type
+                        ? Colors.white
+                        : Colors.grey,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ),
-          )),
-    );
-  }
-
-  Widget _buildSeatCounter(TicketDetailsController controller) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(), borderRadius: BorderRadius.circular(12.r)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () {
-              if (controller.seatCount.value > 1) controller.seatCount.value--;
-            },
-            icon: Icon(Icons.remove_circle_outline,
-                color: const Color.fromARGB(255, 93, 58, 153), size: 30.sp),
-          ),
-          Obx(() => Text(controller.seatCount.value.toString().padLeft(2, '0'),
-              style: GoogleFonts.roboto(
-                  fontSize: 24.sp, fontWeight: FontWeight.bold))),
-          IconButton(
-            onPressed: () => controller.seatCount.value++,
-            icon: Icon(Icons.add_circle_outline,
-                color: const Color.fromARGB(255, 93, 58, 153), size: 30.sp),
-          ),
-        ],
+              )),
+        ),
       ),
     );
   }
 
-  Widget _buildPriceDetails(TicketDetailsController controller) {
-    return Column(
+  Widget _buildSeatCounter(TicketDetailsController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Ticket Price",
-                style: GoogleFonts.roboto(
-                    fontSize: 16.sp, fontWeight: FontWeight.w500)),
-            Text(
-                "\$${controller.ticketPrices[controller.selectedTicketType.value]!.toStringAsFixed(2)} USD",
-                style: GoogleFonts.roboto(
-                    fontSize: 16.sp, fontWeight: FontWeight.bold)),
-          ],
+        IconButton(
+          onPressed: () {
+            if (controller.seatCount.value > 1) controller.seatCount.value--;
+          },
+          icon: const Icon(Icons.remove_circle_outline, color: Colors.white),
         ),
-        SizedBox(height: 10.h),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-                "${controller.seatCount.value} x \$${controller.ticketPrices[controller.selectedTicketType.value]!.toStringAsFixed(2)}",
+        Obx(() => AnimatedSwitcher(
+              duration: Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) =>
+                  ScaleTransition(scale: animation, child: child),
+              child: Text(
+                controller.seatCount.value.toString().padLeft(2, '0'),
+                key: ValueKey<int>(controller.seatCount.value),
                 style: GoogleFonts.roboto(
-                    fontSize: 16.sp, fontWeight: FontWeight.w500)),
-            Text(
-                "\$${(controller.seatCount.value * controller.ticketPrices[controller.selectedTicketType.value]!).toStringAsFixed(2)} USD",
-                style: GoogleFonts.roboto(
-                    fontSize: 16.sp, fontWeight: FontWeight.bold)),
-          ],
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            )),
+        IconButton(
+          onPressed: () => controller.seatCount.value++,
+          icon: const Icon(Icons.add_circle_outline, color: Colors.white),
         ),
-        SizedBox(height: 10.h),
-        const Divider(),
       ],
     );
   }
 
   Widget _buildTotalPrice(TicketDetailsController controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text("Total Price",
+    return Obx(() => AnimatedOpacity(
+          opacity: 1.0,
+          duration: Duration(milliseconds: 500),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Total Price",
+                  style: GoogleFonts.roboto(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white)),
+              Text(
+                "\$${controller.totalPrice.toStringAsFixed(2)} USD",
+                style: GoogleFonts.roboto(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurpleAccent),
+              ),
+            ],
+          ),
+        ));
+  }
+
+  Widget _gradientButton(String text, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 15.h),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.deepPurpleAccent, Colors.black],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Center(
+          child: Text(
+            text,
             style: GoogleFonts.roboto(
-                fontSize: 18.sp, fontWeight: FontWeight.bold)),
-        Text("\$${controller.totalPrice.toStringAsFixed(2)} USD",
-            style: GoogleFonts.roboto(
-                fontSize: 18.sp, fontWeight: FontWeight.bold)),
-      ],
+                color: Colors.white,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _glassContainer({required Widget child, EdgeInsets? padding}) {
+    return Container(
+      padding: padding ?? EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.white.withOpacity(0.05),
+              blurRadius: 10,
+              spreadRadius: 2),
+        ],
+      ),
+      child: child,
     );
   }
 }

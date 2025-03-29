@@ -63,12 +63,25 @@ class ViewAllEventScreen extends StatelessWidget {
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.r),
-                  borderSide: BorderSide.none,
+                  borderSide: BorderSide(
+                      color: Colors.grey.withOpacity(0.5),
+                      width: 1.5), // Added border
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                  borderSide: BorderSide(
+                      color: Colors.grey.withOpacity(0.5),
+                      width: 1.5), // Border when not focused
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                  borderSide: BorderSide(
+                      color: Colors.deepPurple.withOpacity(0.5),
+                      width: 2.0), // Border when focused
                 ),
               ),
             ),
           ),
-
           // Event List with Filtering
           Expanded(
             child: Obx(() {
